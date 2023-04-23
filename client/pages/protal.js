@@ -153,24 +153,115 @@ export default function Sell() {
   }
 
   return (
+    // div
     <div>
       <div>
         <div>
-          <div>
-            <h4>NFTs of Wallet: {user}</h4>
+          {/* //container sm   */}
+          <div className="container sm">
+            {/* //row  */}
+            <div className="row">
+              {/* col */}
+              <div className="col">
+                <h4>NFTs of Wallet: {user}</h4>
+              </div>
+              <button
+                className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 m-2 border border-blue-500 hover:border-transparent rounded"
+                onClick={connectWallet}
+              >
+                Refresh Wallet
+              </button>
+              <button
+                className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 m-2 border border-green-500 hover:border-transparent rounded"
+                onClick={getWalletNFTs}
+              >
+                Refresh NFTs
+              </button>
+            </div>
           </div>
-          <button
-            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-            onClick={connectWallet}
-          >
-            Refresh Wallet
-          </button>
-          <button
-            className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-            onClick={getWalletNFTs}
-          >
-            Refresh NFTs
-          </button>
+        </div>
+        {/* Fetching nfts in the frontend */}
+        <div>
+          {nfts.map((nft, i) => {
+            var owner = user;
+            if (owner.indexOf(nft.wallet) !== -1) {
+              const executeRelist = async () => {
+                const { price } = resalePrice;
+                if (!price) return;
+                try {
+                  relistNFT();
+                } catch (error) {
+                  console.log("Tx failed", error);
+                }
+              };
+              const relistNFT = async () => {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+
+                const contractnft = new ethers.Contract(
+                  nftContractAddress,
+                  nftContractABI,
+                  signer
+                );
+
+                await contractnft.setApprovalForAll(
+                  resellContractAddress,
+                  true
+                );
+
+                let contract = new ethers.Contract(
+                  resellContractAddress,
+                  resellContractABI,
+                  signer
+                );
+
+                let listingFee = await contract.getListingFee();
+                listingFee = listingFee.toString();
+
+                let transaction = await contract.listSale(nft.tokenId, price, {
+                  value: listingFee,
+                });
+
+                await transaction.wait();
+                router.push("/portal");
+              };
+              return (
+                <div key={i}>
+                  <a
+                    href="#"
+                    className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                  >
+                    <div key={i}>
+                      <img src={nft.img} alt="" />
+                      {/* //todo: body - key */}
+                      <body>
+                        <h3> Owned by you</h3>
+                        <h5>
+                          {nft.name} Token-{nft.tokenId}
+                        </h5>
+                        <h6>{nft.desc}</h6>
+                        <input
+                          type="text"
+                          placeholder="Set your price"
+                          onChange={(e) =>
+                            updateresalePrice({
+                              ...resalePrice,
+                              price: e.target.value,
+                            })
+                          }
+                        />
+                        <button onClick={executeRelist}>Relist for Sale</button>
+                      </body>
+                      <p clasNames="font-normal text-gray-700 dark:text-gray-400">
+                        Here are the biggest enterprise technology acquisitions
+                        of 2021 so far, in reverse chronological order.
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              );
+            }
+          })}
         </div>
       </div>
     </div>
