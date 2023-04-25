@@ -1,0 +1,15 @@
+{
+  "name": "My NFT",
+  "description": "This is an example NFT",
+  "image": "https://gateway.pinata.cloud/ipfs/QmZ6f5re6EiCwmE8tsss7ijQmpCW6Mbc7UgbpTR8BBN3GP",
+  "attributes": [
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Shape",
+      "value": "Circle"
+    }
+  ]
+}
