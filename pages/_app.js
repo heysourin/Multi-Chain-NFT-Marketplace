@@ -2,28 +2,28 @@ import "../styles/globals.css";
 import Link from "next/link";
 
 function MyApp({ Component, pageProps }) {
-  const connectWallet = async () => {
-    // setLoading(true);
-    try {
-      const { ethereum } = window;
+  // const connectWallet = async () => {
+  //   // setLoading(true);
+  //   try {
+  //     const { ethereum } = window;
 
-      if (!ethereum) {
-        alert("Metamask has found!");
-        return;
-      }
+  //     if (!ethereum) {
+  //       alert("Metamask not found!");
+  //       return;
+  //     }
 
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
+  //     const accounts = await ethereum.request({
+  //       method: "eth_requestAccounts",
+  //     });
 
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-      setLoadingState("Not-loaded");
-    } catch (err) {
-      console.error(err.message);
-      setLoadingState("Not-loaded");
-    }
-  };
+  //     console.log("Connected to", accounts[0]);
+  //     setCurrentAccount(accounts[0]);
+  //     setLoadingState("Not-loaded");
+  //   } catch (err) {
+  //     console.error(err.message);
+  //     setLoadingState("Not-loaded");
+  //   }
+  // };
   return (
     <div>
       <nav className="border-b p-6">
@@ -41,7 +41,6 @@ function MyApp({ Component, pageProps }) {
           <Link href="/dashboard" className="mr-6 text-blue-500">
             Dashboard
           </Link>
-          <button onClick={connectWallet}>Connect Wallet</button>
         </div>
       </nav>
       <Component {...pageProps} />

@@ -104,25 +104,27 @@ export default function Home() {
     setNfts(items);
     setLoadingState("loaded");
   }
-  async function buyNft(nft) {
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(
-      marketplaceAddress,
-      marketplaceABI,
-      signer
-    );
 
-    /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
-    const transaction = await contract.createMarketSale(nft.tokenId, {
-      value: price,
-    });
-    await transaction.wait();
-    loadNFTs();
+  async function buyNft(nft) {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        marketplaceAddress,
+        marketplaceABI,
+        signer
+      );
+
+      /* user will be prompted to pay the asking proces to complete the transaction */
+      const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+      const transaction = await contract.createMarketSale(nft.tokenId, {
+        value: price,
+      });
+      await transaction.wait();
+      loadNFTs();
+    } catch (error) {
+      console.error(error);
+    }
   }
   if (loadingState === "loaded" && !nfts.length)
     return <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>;
@@ -141,13 +143,13 @@ export default function Home() {
                   {nft.name}
                 </p>
                 <div style={{ height: "70px", overflow: "hidden" }}>
-                  <p className="text-gray-400">{nft.description}</p>
+                  <p className="text-gray-500">{nft.description}</p>
                 </div>
               </div>
-              <div className="p-4 bg-black">
-                <p className="text-2xl font-bold text-white">{nft.price} ETH</p>
+              <div className="bg-gradient-to-r from-gray-700 to-gray-500">
+                <p className="p-2 text-2xl font-bold text-white">⟠Price: {nft.price} ETH</p>
                 <button
-                  className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
+                  className="mt-2 w-full py-3 font-semibold text-2xl text-blue-100 rounded bg-gradient-to-r from-blue-600 to-blue-400"
                   onClick={() => buyNft(nft)}
                 >
                   Buy
