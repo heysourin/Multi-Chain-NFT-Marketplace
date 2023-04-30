@@ -1,8 +1,4 @@
-import Head from "next/head";
-import Image from "next/image";
 import { ethers } from "ethers";
-import axios from "axios";
-import Web3Modal from "web3modal";
 import { useEffect, useState } from "react";
 import { marketplaceAddress, marketplaceABI } from "../config";
 
@@ -34,6 +30,7 @@ export default function Home() {
         const account = accounts[0];
         // console.log("Authorized account has found", account);
         setCurrentAccount(account);
+        console.log("Peyechi");
       } else {
         setCurrentAccount("");
         console.log("No authorized account has found!");
@@ -68,20 +65,17 @@ export default function Home() {
     }
   };
 
+  //Loads all unsold nfts in the market
   async function loadNFTs() {
-    /* create a generic provider and query for unsold market items */
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
       marketplaceAddress,
       marketplaceABI,
       provider
     );
-    const data = await contract.fetchMarketItems();
+    const data = await contract.fetchMarketItems();// Which returns
+    // console.log("Here: ",data);
 
-    /*
-     *  map over items returned from smart contract and format
-     *  them as well as fetch their token metadata
-     */
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await contract.tokenURI(i.tokenId);
@@ -97,7 +91,7 @@ export default function Home() {
           name: meta.name,
           description: meta.description,
         };
-        console.log(item);
+        console.log("Items loaded",item);
         return item;
       })
     );
@@ -128,6 +122,7 @@ export default function Home() {
   }
   if (loadingState === "loaded" && !nfts.length)
     return <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>;
+    
   return (
     <div className="flex justify-center">
       <div className="px-4" style={{ maxWidth: "1600px" }}>

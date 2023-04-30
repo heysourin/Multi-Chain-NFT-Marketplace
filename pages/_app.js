@@ -2,44 +2,36 @@ import "../styles/globals.css";
 import Link from "next/link";
 
 function MyApp({ Component, pageProps }) {
-  // const connectWallet = async () => {
-  //   // setLoading(true);
-  //   try {
-  //     const { ethereum } = window;
-
-  //     if (!ethereum) {
-  //       alert("Metamask not found!");
-  //       return;
-  //     }
-
-  //     const accounts = await ethereum.request({
-  //       method: "eth_requestAccounts",
-  //     });
-
-  //     console.log("Connected to", accounts[0]);
-  //     setCurrentAccount(accounts[0]);
-  //     setLoadingState("Not-loaded");
-  //   } catch (err) {
-  //     console.error(err.message);
-  //     setLoadingState("Not-loaded");
-  //   }
-  // };
   return (
     <div>
-      <nav className="border-b p-6">
-        <p className="text-4xl font-bold">Pixel NFT Marketplace</p>
+      <nav className="border-b p-2 bg-gradient-to-b from-gray-900 to-gray-600 ">
+        <p className="mx-4 font-extrabold text-transparent text-4xl bg-clip-text bg-[conic-gradient(at_top_left,_var(--tw-gradient-stops))] from-gray-200 via-gray-100 to-white">
+          Pixel NFT Marketplace
+        </p>
         <div className="flex mt-4">
-          <Link href="/" className="mr-4 text-blue-500">
+          <Link
+            href="/"
+            className="block mr-32 py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 font-semibold text-xl hover:text-black"
+          >
             Home
           </Link>
-          <Link href="/create-nft" className="mr-6 text-blue-500">
-            Sell NFT
+          <Link
+            href="/create-nft"
+            className="block mr-32 py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 font-semibold text-xl hover:text-black"
+          >
+           Create NFT
           </Link>
-          <Link href="/my-nfts" className="mr-6 text-blue-500">
-            My NFTs
+          <Link
+            href="/resell-nft"
+            className="block mr-32 py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 font-semibold text-xl hover:text-black"
+          >
+            List NFT For Sale
           </Link>
-          <Link href="/dashboard" className="mr-6 text-blue-500">
-            Dashboard
+          <Link
+            href="/dashboard"
+            className="block mr-32 py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 font-semibold text-xl hover:text-black"
+          >
+            Creator Dashboard
           </Link>
         </div>
       </nav>
@@ -49,3 +41,5 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+
+//          <a href="#" class="block mr-32 py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 font-semibold text-xl hover:text-black">About</a>

@@ -5,20 +5,22 @@ import { useRouter } from "next/router";
 import Web3Modal from "web3modal";
 import { marketplaceAddress, marketplaceABI } from "../config";
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-const createItem = () => {
+export default function CreateItem () {
   const [fileUrl, setFileUrl] = useState(null);
-  const [formInput, updateFormInput] = useState({
-    price: "",
-    name: "",
-    description: "",
-  });
+  // const [formInput, updateFormInput] = useState({
+  //   price: "",
+  //   name: "",
+  //   description: "",
+  // });
   const router = useRouter();
 
   async function onChange(e) {
     /* upload image to IPFS */
     const file = e.target.files[0];
+    if (!file) return;
+
     try {
       const added = await client.add(file, {
         progress: (prog) => console.log(`received: ${prog}`),
@@ -29,7 +31,7 @@ const createItem = () => {
       console.log("Error uploading file: ", error);
     }
   }
-  
+
   async function uploadToIPFS() {
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return;
@@ -39,6 +41,7 @@ const createItem = () => {
       description,
       image: fileUrl,
     });
+    console.log(data);
     try {
       const added = await client.add(data);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
@@ -51,9 +54,7 @@ const createItem = () => {
 
   async function listNFTForSale() {
     const url = await uploadToIPFS();
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
 
     /* create the NFT */
@@ -63,6 +64,7 @@ const createItem = () => {
       marketplaceABI,
       signer
     );
+
     let listingPrice = await contract.getListingPrice();
     listingPrice = listingPrice.toString();
     let transaction = await contract.createToken(url, price, {
@@ -72,7 +74,6 @@ const createItem = () => {
 
     router.push("/");
   }
-
   return (
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
@@ -101,7 +102,7 @@ const createItem = () => {
         {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
         <button
           onClick={listNFTForSale}
-          className="font-bold mt-4 bg-yellow-500 text-white rounded p-4 shadow-lg"
+          className="font-bold mt-4 bg-gradient-to-r  text-black from-blue-600 to-blue-400 rounded p-4 shadow-2xl"
         >
           Create NFT
         </button>
@@ -109,5 +110,3 @@ const createItem = () => {
     </div>
   );
 };
-
-export default createItem;
